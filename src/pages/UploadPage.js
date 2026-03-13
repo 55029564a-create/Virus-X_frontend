@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled,{ keyframes} from 'styled-components'; // 스타일드 컴포넌트 불러오기
-import axios from 'axios';
 import Swal from 'sweetalert2';
+import { scanMalware } from '../api/scanner';
 
 // --- 🎨 여기서부터 스타일이 입혀진 나만의 컴포넌트(태그)를 만듭니다 ---
 
@@ -177,28 +177,12 @@ function UploadPage() {
 
   const handleScan = async () => {
     if (!selectedFile) return;
-    
     setIsLoading(true);
     
     try { 
-      // 백엔드 완성시 주석 풀기/////////////////////////////////////////////
-      // const formData = new FormData();
-      // formData.append('file', selectedFile);
-      // const response = await axios.post('http://localhost:8000/api/scan', formData);
-      // const resultData = response.data;
-      //////////////////////////////////////////////////////////////
+     const resultData = await scanMalware(selectedFile);
+     navigate('/result', { state: resultData });
 
-      await new Promise(resolve => setTimeout(resolve,3000));
-
-      const mockResultData = { 
-        status: selectedFile.name.includes('exe') ? 'malicious' : 'clean',
-        fileName: selectedFile.name,
-        fileSize: (selectedFile.size / (1024 * 1024)).toFixed(2) + ' MB',
-        aiScore: selectedFile.name.includes('exe') ? '98%' : '2%',
-        vtDetections: selectedFile.name.includes('exe') ? '53 / 72' : '0 / 72',
-      };
-      
-      navigate('/result', {state: mockResultData});
     } catch (error) {
       Swal.fire({
         icon: 'error',
