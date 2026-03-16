@@ -8,10 +8,22 @@ function SignupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
 
   const handleSignup = (e) => {
     e.preventDefault();
-    Swal.fire({ icon: 'success', title: '가입 환영합니다!', showConfirmButton: false, timer: 1500 });
+
+    if (password !== passwordConfirm) {
+      Swal.fire({ icon: 'error', title: '비밀번호 불일치', text: '비밀번호가 일치하지 않습니다.'});
+      return;
+    }
+
+    if (password.length < 6) {
+      Swal.fire({ icon: 'warning', title: ' 보안 취약', text: '비밀번호는 6자리 이상이어야 합니다'});
+      return;
+    }
+
+    Swal.fire({ icon: 'success',title: '가입 환영합니다!', showConfirmButton: false, timer:1500});
     navigate('/login');
   };
 
@@ -37,6 +49,12 @@ function SignupPage() {
             placeholder="Password" 
             value={password}
             onChange={(e) => setPassword(e.target.value)} required 
+          />
+          <Input
+          type="password"
+          placeholder='Confirm Password'
+          value={passwordConfirm}
+          onChange={(e) => setPasswordConfirm(e.target.value)} required
           />
           <SubmitButton type="submit">Sign Up</SubmitButton>
         </Form>

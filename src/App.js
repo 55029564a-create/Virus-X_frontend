@@ -6,6 +6,7 @@ import UploadPage from './pages/UploadPage';
 import ResultPage from './pages/ResultPage';
 import LoginPage from './pages/LoginPage';   // 로그인 추가
 import SignupPage from './pages/SignupPage'; // 회원가입 추가
+import HistoryPage from './pages/HistoryPage';
 
 function App() {
   const globalStyles = {
@@ -43,6 +44,7 @@ function App() {
               <Route path="/result" element={<ResultPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
+              <Route path="/history" element={<HistoryPage />} />
             </Routes>
           </main>
           <Footer />
