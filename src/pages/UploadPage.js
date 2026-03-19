@@ -41,7 +41,7 @@ function UploadPage() {
   const handleDrop = (e) => {
     e.preventDefault(); e.stopPropagation(); setIsDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setSelectedFile(e.dataTransfer.files[0]);
+      validateAndSetFile(e.dataTransfer.files[0]);
     }
   };
 
@@ -62,12 +62,8 @@ const handleScan = async () => {
     
     try { 
       const payload = activeTab === 'file' ? selectedFile : urlValue;
-      
-      // 💡 1. 로컬 스토리지에서 현재 로그인한 유저의 ID를 가져옵니다. (없으면 null)
-      const currentUserId = localStorage.getItem('userId');
-      
-      // 💡 2. API 호출 시 유저 ID를 세 번째 인자로 넘겨줍니다!
-      const resultData = await scanMalware(payload, activeTab, currentUserId);
+    
+      const resultData = await scanMalware(payload, activeTab);
       
       navigate('/result', { state: resultData });
     } catch (error) {

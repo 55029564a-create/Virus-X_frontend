@@ -16,6 +16,7 @@ function Header() {
 
   // 💡 로그아웃을 누르면 금고에서 이름표를 찢어버립니다.
   const handleLogout = () => {
+    localStorage.removeItem('accessToken');
     localStorage.removeItem('userId'); 
     setCurrentUser(null);
     navigate('/'); // 메인으로 쫓아내기

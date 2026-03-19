@@ -8,11 +8,12 @@ import { Container, ContentCard, Title, HistoryTable, StatusBadge, EmptyMessage,
 function HistoryPage() {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
-  const [historyList, setHistoryList] = useState([]); 
-  const [dbStatus, setDbStatus] = useState('loading'); 
+  const [historyList, setHistoryList] = useState([]);
+  const [dbStatus, setDbStatus] = useState('loading');
 
   useEffect(() => {
     const user = localStorage.getItem('userId');
+
     if (!user) {
       Swal.fire({
         icon: 'warning',
@@ -20,26 +21,25 @@ function HistoryPage() {
         text: '로그인한 회원만 볼 수 있는 내역입니다.',
         confirmButtonColor: '#38BDF8', // 💡 다크 테마에 맞춘 네온 블루 버튼
         background: '#111827',
-        color: '#F8FAFC'
+        color: '#F8FAFC',
       }).then(() => {
         navigate('/login');
       });
       return;
-    } 
-    
+    }
+
     setCurrentUser(user);
 
     const fetchHistory = async () => {
       try {
-        const response = await api.get('http://localhost:8080/api/history', {
-          params: { userId: user }
+        const response = await api.get('/api/history', {
+          params: { userId: user },
         });
 
         setDbStatus('connected');
-        setHistoryList(response.data); 
-
+        setHistoryList(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
-        console.error("DB 연결 에러:", error);
+        console.error('DB 연결 에러:', error);
         setDbStatus('disconnected');
       }
     };
@@ -53,7 +53,7 @@ function HistoryPage() {
     <Container>
       <ContentCard>
         <Title>📋 {currentUser.split('@')[0]}님의 검사 내역</Title>
-        
+
         {dbStatus === 'loading' && (
           <EmptyMessage>⏳ DB와 연결을 확인하는 중입니다...</EmptyMessage>
         )}
@@ -82,44 +82,38 @@ function HistoryPage() {
               </tr>
             </thead>
             <tbody>
-              {historyList.map((item, index) => (
-                <tr key={item.scan_id || index}>
-                  {/* 1. 날짜 (예: 2026-03-20 14:30) */}
-                  <td style={{ color: '#94A3B8' }}>
-                    {item.created_at ? item.created_at.substring(0, 16) : '-'}
-                  </td>
-                  
-                  {/* 2. 유형 (URL인지 FILE인지 텍스트로 표시) */}
-                  <td style={{ fontWeight: '600', color: item.input_type === 'URL' ? '#38BDF8' : '#F8FAFC' }}>
-                    {item.input_type === 'URL' ? '🔗 URL' : '📄 FILE'}
-                  </td>
+              {historyList.map((item, index) => {
+                const isUrl = item.input_type === 'URL';
+                const isMalicious = item.final_status === 'X' || item.final_status === 'VEXIT';
 
-                  {/* 3. 검사 대상 (💡 유형이 URL이면 UrlText 스타일 적용, 아니면 일반 텍스트) */}
-                  <td style={{ maxWidth: '300px' }}>
-                    {item.input_type === 'URL' ? (
-                      <UrlText href={item.target_value} target="_blank" rel="noopener noreferrer">
-                        {item.target_value}
-                      </UrlText>
-                    ) : (
-                      <span style={{ fontWeight: '500' }}>{item.target_value}</span>
-                    )}
-                  </td>
-
-                  {/* 4. AI 위험도 점수 (50%가 넘으면 붉은색 경고) */}
-                  <td style={{ color: item.risk_score >= 50 ? '#EF4444' : '#10B981', fontWeight: '700' }}>
-                    {item.risk_score}%
-                  </td>
-
-                  {/* 5. 최종 결과 뱃지 */}
-                  <td>
-                    <StatusBadge $isMalicious={item.final_status === 'X' || item.final_status === 'VEXIT'}>
-                      {(item.final_status === 'X' || item.final_status === 'VEXIT') 
-                        ? '🚨 차단 (VEXIT)' 
-                        : '✅ 안전 (Clean)'}
-                    </StatusBadge>
-                  </td>
-                </tr>
-              ))}
+                return (
+                  <tr key={item.scan_id || index}>
+                    <td style={{ color: '#94A3B8' }}>
+                      {item.created_at ? item.created_at.substring(0, 16) : '-'}
+                    </td>
+                    <td style={{ fontWeight: '600', color: isUrl ? '#38BDF8' : '#F8FAFC' }}>
+                      {isUrl ? '🔗 URL' : '📄 FILE'}
+                    </td>
+                    <td style={{ maxWidth: '300px' }}>
+                      {isUrl ? (
+                        <UrlText href={item.target_value} target="_blank" rel="noopener noreferrer">
+                          {item.target_value}
+                        </UrlText>
+                      ) : (
+                        <span style={{ fontWeight: '500' }}>{item.target_value}</span>
+                      )}
+                    </td>
+                    <td style={{ color: item.risk_score >= 50 ? '#EF4444' : '#10B981', fontWeight: '700' }}>
+                      {item.risk_score}%
+                    </td>
+                    <td>
+                      <StatusBadge $isMalicious={isMalicious}>
+                        {isMalicious ? '🚨 차단 (VEXIT)' : '✅ 안전 (Clean)'}
+                      </StatusBadge>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </HistoryTable>
         )}
