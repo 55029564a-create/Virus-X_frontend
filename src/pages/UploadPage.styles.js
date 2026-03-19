@@ -63,18 +63,65 @@ export const DropZone = styled.div`
   p { color: #64748B !important; }
 `;
 
+// export const SelectedFileBox = styled.div`
+//   margin-top: 20px;
+//   padding: 16px;
+//   background-color: rgba(56, 189, 248, 0.1); /* 스카이블루 빛이 살짝 감도는 배경 */
+//   border: 1px solid rgba(56, 189, 248, 0.3);
+//   border-radius: 8px;
+//   color: #38BDF8; 
+//   font-weight: 600;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   gap: 10px;
+// `;
+
+
 export const SelectedFileBox = styled.div`
   margin-top: 20px;
-  padding: 16px;
-  background-color: rgba(56, 189, 248, 0.1); /* 스카이블루 빛이 살짝 감도는 배경 */
+  padding: 16px 20px;
+  background-color: rgba(56, 189, 248, 0.05); /* 스카이블루 빛이 살짝 감도는 배경 */
   border: 1px solid rgba(56, 189, 248, 0.3);
   border-radius: 8px;
   color: #38BDF8; 
   font-weight: 600;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between; /* 💡 양쪽 정렬 (좌측: 파일명, 우측: X버튼) */
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: rgba(56, 189, 248, 0.6);
+    background-color: rgba(56, 189, 248, 0.1);
+  }
+`;
+
+export const FileInfo = styled.div`
+  display: flex;
+  align-items: center;
   gap: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
+
+/* 💡 [추가] 네온 레드 취소(X) 버튼 */
+export const RemoveButton = styled.button`
+  background: transparent;
+  border: none;
+  color: #64748B;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0 5px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #EF4444; /* 마우스 올리면 블러드 레드 네온 발산 */
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+    transform: scale(1.1);
+  }
 `;
 
 export const spin = keyframes`
@@ -131,5 +178,58 @@ export const ScanButton = styled.button`
     cursor: not-allowed;
     box-shadow: none;
     transform: none;
+  }
+`;
+
+// --- 🌟 새롭게 추가되는 URL 및 탭 관련 스타일 (다크 & 네온 테마 적용) ---
+
+export const TabContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 30px;
+`;
+
+export const TabButton = styled.button`
+  background-color: ${props => (props.$active ? 'rgba(56, 189, 248, 0.1)' : 'transparent')};
+  color: ${props => (props.$active ? '#38BDF8' : '#94A3B8')};
+  border: 1px solid ${props => (props.$active ? 'rgba(56, 189, 248, 0.4)' : 'transparent')};
+  border-radius: 24px;
+  padding: 10px 24px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: rgba(56, 189, 248, 0.05);
+    color: #38BDF8;
+  }
+`;
+
+export const UrlInputContainer = styled.div`
+  width: 100%;
+  padding: 20px 0 40px 0;
+`;
+
+export const UrlInput = styled.input`
+  width: 100%;
+  max-width: 500px;
+  padding: 18px 24px;
+  font-size: 1.1rem;
+  color: #F8FAFC; /* 글씨는 밝게 */
+  background-color: #0F172A; /* 배경은 어둡게 */
+  border: 1px solid #334155;
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.3s;
+
+  &:focus {
+    border-color: #38BDF8;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); /* 포커스 시 네온 빛 */
+  }
+
+  &::placeholder {
+    color: #475569;
   }
 `;

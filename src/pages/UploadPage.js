@@ -3,15 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { scanMalware } from '../api/scanner';
 
-// 💡 방금 분리한 스타일 파일에서 껍데기들을 싹 다 불러옵니다!
 import { 
   Container, UploadCard, Title, Subtitle, DropZone, 
-  SelectedFileBox, ScanButton, Spinner 
+  ScanButton, Spinner, TabContainer, TabButton, UrlInputContainer, UrlInput,
+  // 💡 수정된 컴포넌트들 불러오기
+  SelectedFileBox, FileInfo, RemoveButton 
 } from './UploadPage.styles';
 
 function UploadPage() {
   const navigate = useNavigate();
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [activeTab, setActiveTab] = useState('file'); 
+  const [urlValue, setUrlValue] = useState(''); 
+  
+  // ✨ 다시 단일 파일 상태로 복구
+  const [selectedFile, setSelectedFile] = useState(null); 
   const [isDragActive, setIsDragActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const MAX_FILE_SIZE = 32 * 1024 * 1024;
@@ -19,10 +24,8 @@ function UploadPage() {
   const validateAndSetFile = (file) => {
     if (file.size > MAX_FILE_SIZE) {
       Swal.fire({
-        icon: 'error',
-        title: '용량 초과!',
-        text: '32MB 이하의 파일만 업로드 가능합니다.',
-        confirmButtonColor: '#1a73e8'
+        icon: 'error', title: '용량 초과!', text: '32MB 이하의 파일만 업로드 가능합니다.',
+        confirmButtonColor: '#38BDF8', background: '#111827', color: '#F8FAFC'
       });
       return false; 
     }
@@ -32,94 +35,104 @@ function UploadPage() {
 
   const handleFileChange = (event) => {
     const file = event.target.files && event.target.files[0];
-    if (file) {
-      validateAndSetFile(file);
-      event.target.value = '';
-    }
-  };
-
-  const handleDragEnter = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragActive(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragActive(false);
+    if (file) { validateAndSetFile(file); event.target.value = ''; }
   };
 
   const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragActive(false);
+    e.preventDefault(); e.stopPropagation(); setIsDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       setSelectedFile(e.dataTransfer.files[0]);
     }
   };
 
-  const handleScan = async () => {
-    if (!selectedFile) return;
+  const handleDragEnter = (e) => { e.preventDefault(); e.stopPropagation(); setIsDragActive(true); };
+  const handleDragLeave = (e) => { e.preventDefault(); e.stopPropagation(); setIsDragActive(false); };
+
+  // ✨ 파일 취소 로직 (X 버튼 클릭 시 실행)
+  const handleRemoveFile = (e) => {
+    e.stopPropagation(); // 클릭 이벤트가 부모로 번지는 것 방지
+    setSelectedFile(null); // 파일을 비워버림
+  };
+
+const handleScan = async () => {
+    if (activeTab === 'file' && !selectedFile) return;
+    if (activeTab === 'url' && !urlValue.trim()) return;
+
     setIsLoading(true);
     
     try { 
-      const resultData = await scanMalware(selectedFile);
+      const payload = activeTab === 'file' ? selectedFile : urlValue;
+      
+      // 💡 1. 로컬 스토리지에서 현재 로그인한 유저의 ID를 가져옵니다. (없으면 null)
+      const currentUserId = localStorage.getItem('userId');
+      
+      // 💡 2. API 호출 시 유저 ID를 세 번째 인자로 넘겨줍니다!
+      const resultData = await scanMalware(payload, activeTab, currentUserId);
+      
       navigate('/result', { state: resultData });
-
     } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: '서버 에러',
-        text: '서버와 통신 중 문제가 발생했습니다.',
-        confirmButtonColor : '#1a73e8'
+      Swal.fire({ 
+        icon: 'error', title: '서버 에러', text: '서버와 통신 중 문제가 발생했습니다.', 
+        confirmButtonColor : '#38BDF8', background: '#111827', color: '#F8FAFC' 
       });
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const isButtonDisabled = isLoading || (activeTab === 'file' ? !selectedFile : !urlValue.trim());
+
   return (
     <Container>
       <UploadCard>
         <Title>Virus<span>X</span></Title>
-        <Subtitle>Analyze suspicious files to detect malware</Subtitle>
+        <Subtitle>Analyze suspicious files and URLs to detect malware</Subtitle>
 
-        <DropZone
-          $isDragActive={isDragActive}
-          onClick={() => document.getElementById('fileInput').click()}
-          onDragEnter={handleDragEnter}
-          onDragOver={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-        >
-          <div style={{ fontSize: '3rem', marginBottom: '10px' }}>📄</div>
-          <h3 style={{ margin: '0 0 8px 0', color: '#202124' }}>Choose file</h3>
-          <p style={{ margin: 0, color: '#5f6368' }}>or drop it here</p>
-          
-          <input 
-            id="fileInput"
-            type="file" 
-            style={{ display: 'none' }}
-            onChange={handleFileChange} 
-          />
-        </DropZone>
+        <TabContainer>
+          <TabButton $active={activeTab === 'file'} onClick={() => setActiveTab('file')}>File Scan</TabButton>
+          <TabButton $active={activeTab === 'url'} onClick={() => setActiveTab('url')}>URL Scan</TabButton>
+        </TabContainer>
 
-        {selectedFile && (
-          <SelectedFileBox>
-            <span>📎</span> {selectedFile.name}
-          </SelectedFileBox>
+        {activeTab === 'file' ? (
+          <>
+            <DropZone
+              $isDragActive={isDragActive}
+              onClick={() => document.getElementById('fileInput').click()}
+              onDragEnter={handleDragEnter}
+              onDragOver={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <div style={{ fontSize: '3rem', marginBottom: '10px' }}>📄</div>
+              <h3>Choose file</h3>
+              <p>or drop it here</p>
+              
+              <input 
+                id="fileInput" type="file" style={{ display: 'none' }}
+                onChange={handleFileChange} 
+              />
+            </DropZone>
+
+            {/* ✨ 선택된 파일이 있을 때 예쁜 박스와 취소(X) 버튼 렌더링 */}
+            {selectedFile && (
+              <SelectedFileBox>
+                <FileInfo><span>📎</span> {selectedFile.name}</FileInfo>
+                <RemoveButton onClick={handleRemoveFile} title="업로드 취소">✕</RemoveButton>
+              </SelectedFileBox>
+            )}
+          </>
+        ) : (
+          <UrlInputContainer>
+            <UrlInput 
+              type="text" placeholder="e.g., https://suspicious-website.com" 
+              value={urlValue} onChange={(e) => setUrlValue(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && !isButtonDisabled && handleScan()}
+            />
+          </UrlInputContainer>
         )}
 
-        <ScanButton onClick={handleScan} disabled={!selectedFile || isLoading}>
-          {isLoading ? (
-            <>
-              <Spinner /> <span>Scanning...</span>
-            </>
-          ) : (
-            'Confirm upload'
-          )}
+        <ScanButton onClick={handleScan} disabled={isButtonDisabled}>
+          {isLoading ? <><Spinner /> <span>Scanning...</span></> : 'Scan Now'}
         </ScanButton>
       </UploadCard>
     </Container>
