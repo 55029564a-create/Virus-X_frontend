@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = "http://localhost:8080";
 
 // 💡 userId 파라미터 추가!
 export const scanMalware = async (payload, type, userId) => { 
