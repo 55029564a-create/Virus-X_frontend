@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import axios from 'axios';
+import api from '../api/axios';
 // 💡 만들어두신 UrlText 스타일 컴포넌트를 추가로 불러옵니다!
 import { Container, ContentCard, Title, HistoryTable, StatusBadge, EmptyMessage, UrlText } from './History.styles';
 
@@ -31,7 +31,7 @@ function HistoryPage() {
 
     const fetchHistory = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/history', {
+        const response = await api.get('http://localhost:8080/api/history', {
           params: { userId: user }
         });
 
