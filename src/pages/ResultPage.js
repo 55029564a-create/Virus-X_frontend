@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { 
-  Container, HeaderTitle, ResultCard, TopSection, ScoreGauge, ScoreText, 
-  ScoreNumber, ScoreLabel, SummarySection, TargetName, 
-  BottomSection, TabContainer, TabButton, SectionTitle, ReasonList, 
+import {
+  Container, HeaderTitle, ResultCard, TopSection, ScoreGauge, ScoreText,
+  ScoreNumber, ScoreLabel, SummarySection, TargetName,
+  BottomSection, TabContainer, TabButton, SectionTitle, ReasonList,
   EngineGrid, EngineCard, EngineName, EngineResult, BackButton,
-  ResultSplitView, OurEngineSection, MainEngineCard, MainEngineName, 
+  ResultSplitView, OurEngineSection, MainEngineCard, MainEngineName,
   MainEngineResult, OtherEnginesSection,
-  ThreatTypeBadge, ActionGuideBox, ActionHeader, ActionList 
+  ThreatTypeBadge, ActionGuideBox, ActionHeader, ActionList
 } from './ResultPage.styles';
 import { StatusBadge } from './History.styles';
 
@@ -70,13 +70,16 @@ function ResultPage() {
     );
   }
 
-  const scanData = location.state;
-  const isMalicious = scanData.status === 'VEXIT' || scanData.status === 'X';
-  const riskScore = scanData.risk_score || 0;
-  
+  // 💡 기존 코드를 이렇게 수정하세요 (변수명 매칭)
+  const scanData = location.state.resultData; // 보따리 통째로 가져오기
+  const isMalicious = scanData.is_malware; // 파이썬이 보낸 true/false
+  const riskScore = isMalicious ? 95 : 10; // 점수가 없다면 판정에 따라 임시 부여
+  const targetName = scanData.filename; // 파일명
+  const aiReport = scanData.ai_report; // ⭐️ 이게 바로 제미나이 리포트!
+
   // 백엔드에서 받아올 데이터 구조 시뮬레이션
   const inputType = scanData.input_type || 'file'; // 'file' 또는 'url'
-  const threatType = scanData.threat_type || (isMalicious ? 'Ransomware' : 'Clean'); 
+  const threatType = scanData.threat_type || (isMalicious ? 'Ransomware' : 'Clean');
   const actionGuideSteps = getActionGuide(isMalicious, threatType, inputType);
 
   const ourEngine = { name: 'Virus-X AI', isMalicious: isMalicious };
@@ -91,7 +94,7 @@ function ResultPage() {
   return (
     <Container>
       <HeaderTitle>Scan Report</HeaderTitle>
-      
+
       <ResultCard>
         {/* --- 1. 상단 영역: 도넛 차트 & 요약 정보 --- */}
         <TopSection>
@@ -108,7 +111,7 @@ function ResultPage() {
                 {isMalicious ? '🚨 VEXIT (위험 차단)' : '✅ Verified (안전)'}
               </StatusBadge>
             </div>
-            
+
             <TargetName>
               {scanData.target_name}
               {/* AI-2가 판별한 구체적인 위협 종류 뱃지 표시 */}
@@ -120,14 +123,18 @@ function ResultPage() {
             {/* 멘토 피드백 반영: 구체적인 사후 대처 가이드라인 박스 */}
             <ActionGuideBox $isMalicious={isMalicious}>
               <ActionHeader $isMalicious={isMalicious}>
-                <span>{isMalicious ? '⚠️' : '💡'}</span> 
-                {isMalicious ? 'Immediate Action Required (긴급 조치 사항)' : 'Action Guide (권장 사항)'}
+                <span>{isMalicious ? '🚨' : '✅'}</span>
+                AI 정밀 분석 리포트
               </ActionHeader>
-              <ActionList>
-                {actionGuideSteps.map((step, index) => (
-                  <li key={index} dangerouslySetInnerHTML={{ __html: step.replace(/(절대|즉시|네트워크|비밀번호)/g, '<strong>$1</strong>') }} />
-                ))}
-              </ActionList>
+              <div style={{
+                padding: '15px',
+                lineHeight: '1.6',
+                color: '#F8FAFC',
+                whiteSpace: 'pre-wrap',
+                fontSize: '0.95rem'
+              }}>
+                {aiReport}
+              </div>
             </ActionGuideBox>
           </SummarySection>
         </TopSection>
@@ -148,7 +155,12 @@ function ResultPage() {
             <ResultSplitView>
               {/* 좌측: 우리 AI 큼직한 강조 카드 */}
               <OurEngineSection>
-                <SectionTitle style={{ color: '#38BDF8' }}>⚡ Our AI Engine</SectionTitle>
+                <div>
+                  <SectionTitle>✨ Virus-X AI 상세 분석</SectionTitle>
+                  <div style={{ color: '#94A3B8', padding: '10px', backgroundColor: '#1E293B', borderRadius: '8px' }}>
+                    <p style={{ color: '#F8FAFC', whiteSpace: 'pre-wrap' }}>{aiReport}</p>
+                  </div>
+                </div>
                 <MainEngineCard>
                   <MainEngineName>
                     <span>🤖</span>
@@ -185,9 +197,9 @@ function ResultPage() {
                 {scanData.ai_reasons && scanData.ai_reasons.map((reason, index) => (
                   <li key={index}>{reason}</li>
                 ))}
-                
+
                 <li style={{ color: '#64748B', marginTop: '20px', listStyle: 'none' }}>
-                  <strong>Scan Time:</strong> {scanData.scan_time || '0.14s'} <br/>
+                  <strong>Scan Time:</strong> {scanData.scan_time || '0.14s'} <br />
                   {scanData.file_hash && `MD5 Hash: ${scanData.file_hash}`}
                 </li>
               </ReasonList>

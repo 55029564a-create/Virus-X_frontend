@@ -65,16 +65,20 @@ const handleScan = async () => {
     
       const resultData = await scanMalware(payload, activeTab);
       
-      navigate('/result', { state: resultData });
+      navigate('/result', { state: { resultData: resultData } });
     } catch (error) {
       Swal.fire({ 
-        icon: 'error', title: '서버 에러', text: '서버와 통신 중 문제가 발생했습니다.', 
-        confirmButtonColor : '#38BDF8', background: '#111827', color: '#F8FAFC' 
+        icon: 'error', 
+        title: '서버 에러', 
+        text: 'AI 분석 서버와 연결할 수 없습니다. IP 주소를 확인하세요!', 
+        confirmButtonColor : '#38BDF8', 
+        background: '#111827', 
+        color: '#F8FAFC' 
       });
     } finally {
       setIsLoading(false);
     }
-  };
+};
 
   const isButtonDisabled = isLoading || (activeTab === 'file' ? !selectedFile : !urlValue.trim());
 
