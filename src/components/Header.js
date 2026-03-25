@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { HeaderContainer, Logo, Nav, NavButton } from './Header.styles';
+import { HeaderContainer, LeftGroup, Logo, MenuNav, MenuLink, Nav, NavButton } from './Header.styles';
 
 function Header() {
   const navigate = useNavigate();
@@ -8,34 +8,63 @@ function Header() {
   
   const [currentUser, setCurrentUser] = useState(null);
 
-  // 💡 주소(페이지)가 바뀔 때마다 브라우저 금고에 'userId' 이름표가 있는지 쓱 확인합니다.
   useEffect(() => {
     const user = localStorage.getItem('userId');
-    setCurrentUser(user); // 이름표가 있으면 그 이메일을 저장, 없으면 null
+    setCurrentUser(user);
   }, [location.pathname]);
 
-  // 💡 로그아웃을 누르면 금고에서 이름표를 찢어버립니다.
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userId'); 
     setCurrentUser(null);
-    navigate('/'); // 메인으로 쫓아내기
+    navigate('/'); 
   };
+
+  // 💡 현재 경로를 확인하는 변수 (밑줄 활성화용)
+  const currentPath = location.pathname;
 
   return (
     <HeaderContainer>
-      <Logo onClick={() => navigate('/')}>
-        Virus<span>X</span>
-      </Logo>
+      
+      {/* 💡 왼쪽 그룹: 로고 + 페이지 이동 메뉴바 */}
+      <LeftGroup>
+        <Logo onClick={() => navigate('/')}>
+          VX<span>.</span>
+        </Logo>
+        
+        <MenuNav>
+          <MenuLink 
+            $active={currentPath === '/'} 
+            onClick={() => navigate('/')}
+          >
+            About
+          </MenuLink>
+          <MenuLink 
+            $active={currentPath === '/scan'} 
+            onClick={() => navigate('/scan')}
+          >
+            Scanner
+          </MenuLink>
+          
+          {/* 로그인한 사용자에게만 '검사 기록' 메뉴 노출 */}
+          {currentUser && (
+            <MenuLink 
+              $active={currentPath === '/history'} 
+              onClick={() => navigate('/history')}
+            >
+              내 검사 기록
+            </MenuLink>
+          )}
+        </MenuNav>
+      </LeftGroup>
+
+      {/* 💡 오른쪽 그룹: 유저 정보 및 로그인/로그아웃 버튼 */}
       <Nav>
-        {/* 💡 currentUser(이름표)가 있으면 환영인사, 없으면 로그인/가입 버튼! */}
         {currentUser ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            <span style={{ fontSize: '0.95rem', fontWeight: '600', color: '#5f6368' }}>
-              <span style={{ color: '#1a73e8' }}>{currentUser.split('@')[0]}</span>님 환영합니다
+            <span style={{ fontSize: '0.9rem', fontWeight: '600', color: '#94A3B8' }}>
+              <span style={{ color: '#F8FAFC' }}>{currentUser.split('@')[0]}</span>님
             </span>
-            {/* 👇 로그인한 유저만 누를 수 있는 기록 버튼 추가! */}
-            <NavButton onClick={() => navigate('/history')}>내 기록</NavButton>
             <NavButton onClick={handleLogout}>Log out</NavButton>
           </div>
         ) : (
@@ -45,6 +74,7 @@ function Header() {
           </>
         )}
       </Nav>
+      
     </HeaderContainer>
   );
 }
