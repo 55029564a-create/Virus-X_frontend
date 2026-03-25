@@ -4,7 +4,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 60px 20px;
+  padding: 60px 20px 100px 20px; /* 💡 하단 여백(100px)을 넉넉히 주어 잘림 방지 */
   min-height: 100vh;
   background-color: #0b1120;
   box-sizing: border-box;
@@ -16,7 +16,6 @@ export const HeaderTitle = styled.h2`
   color: #f8fafc;
   margin-bottom: 30px;
   letter-spacing: -0.5px;
-  text-shadow: 0 0 10px rgba(248, 250, 252, 0.1);
 `;
 
 export const ResultCard = styled.div`
@@ -30,7 +29,6 @@ export const ResultCard = styled.div`
   box-sizing: border-box;
 `;
 
-/* 상단 영역 (점수 및 행동 지침) */
 export const TopSection = styled.div`
   display: flex;
   gap: 50px;
@@ -137,7 +135,6 @@ export const ThreatTypeBadge = styled.span`
       props.$isMalicious
         ? "rgba(239, 68, 68, 0.4)"
         : "rgba(16, 185, 129, 0.4)"};
-  letter-spacing: 0.5px;
 `;
 
 export const ActionGuideBox = styled.div`
@@ -177,26 +174,6 @@ export const ActionList = styled.ul`
   }
 `;
 
-export const BackButton = styled.button`
-  margin-top: 40px;
-  background: transparent;
-  color: #38bdf8;
-  border: 1px solid #38bdf8;
-  border-radius: 6px;
-  padding: 14px 40px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: rgba(56, 189, 248, 0.1);
-    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
-    transform: translateY(-2px);
-  }
-`;
-
-/* 💡 하단: AI 개별 검사 결과 영역 (신규 추가) */
 export const BottomSection = styled.div`
   padding-top: 40px;
   display: flex;
@@ -207,7 +184,7 @@ export const BottomSection = styled.div`
 export const SectionTitle = styled.h3`
   color: #f8fafc;
   font-size: 1.3rem;
-  margin: 0 0 20px 0;
+  margin: 0 0 10px 0;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -217,8 +194,9 @@ export const AICard = styled.div`
   background: #0f172a;
   border: 1px solid #1e293b;
   border-radius: 12px;
-  overflow: hidden;
-  position: relative; /* 자물쇠 오버레이를 위해 필수 */
+  overflow: hidden; /* 💡 내용물이 카드 밖으로 나가지 않도록 꽉 잡음 */
+  display: flex;
+  flex-direction: column;
 `;
 
 export const AIHeader = styled.div`
@@ -245,26 +223,80 @@ export const AIHeader = styled.div`
   }
 `;
 
+/* 💡 [박스 잘림 수정] Body 전체를 감싸는 래퍼 추가 */
+export const AIBodyWrapper = styled.div`
+  position: relative; /* 자물쇠의 절대 기준점이 됨 */
+  width: 100%;
+`;
+
 export const AIBody = styled.div`
   padding: 24px;
   color: #cbd5e1;
   font-size: 0.95rem;
   line-height: 1.6;
 
-  /* 비회원일 때 컨텐츠를 흐리게 만듦 */
-  filter: ${(props) => (props.$isLocked ? "blur(6px)" : "none")};
+  /* 💡 잠겼을 때는 내용물을 흐리게 처리 */
+  filter: ${(props) => (props.$isLocked ? "blur(8px)" : "none")};
   transition: filter 0.3s ease;
   user-select: ${(props) => (props.$isLocked ? "none" : "auto")};
 `;
 
-/* 💡 자물쇠 오버레이 UI (회원가입 유도) */
+/* 💡 DTO 데이터를 예쁘게 보여줄 태그 영역 */
+export const AIDetailRow = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+`;
+
+export const AITag = styled.div`
+  background: ${(props) =>
+    props.$isMalicious ? "rgba(239, 68, 68, 0.1)" : "rgba(16, 185, 129, 0.1)"};
+  color: ${(props) => (props.$isMalicious ? "#F87171" : "#34D399")};
+  border: 1px solid
+    ${(props) =>
+      props.$isMalicious
+        ? "rgba(239, 68, 68, 0.3)"
+        : "rgba(16, 185, 129, 0.3)"};
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`;
+
+export const AINormalTag = styled.div`
+  background: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+`;
+
+export const ReasonList = styled.ul`
+  margin: 0;
+  padding-left: 20px;
+  color: #94a3b8;
+
+  li {
+    margin-bottom: 6px;
+  }
+  li:last-child {
+    margin-bottom: 0;
+  }
+`;
+
 export const LockedOverlay = styled.div`
   position: absolute;
-  top: 60px; /* 헤더 아래부터 덮음 */
+  top: 0;
   left: 0;
-  width: 100%;
-  height: calc(100% - 60px);
-  background: rgba(11, 17, 32, 0.6);
+  right: 0;
+  bottom: 0;
+  background: rgba(11, 17, 32, 0.3);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -276,14 +308,14 @@ export const LockedOverlay = styled.div`
 `;
 
 export const LockIcon = styled.div`
-  font-size: 2.5rem;
-  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 10px rgba(56, 191, 248, 0.23));
 `;
 
 export const LockText = styled.p`
   margin: 0;
   color: #f8fafc;
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 600;
 
   span {
@@ -296,12 +328,12 @@ export const UnlockButton = styled.button`
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 10px 24px;
-  font-size: 0.95rem;
+  padding: 10px 30px;
+  font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
+  box-shadow: 0 4px 15px rgba(56, 191, 248, 0.16);
   transition: all 0.2s ease;
-  box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
 
   &:hover {
     transform: translateY(-2px);
@@ -309,14 +341,21 @@ export const UnlockButton = styled.button`
   }
 `;
 
-export const FeatureTag = styled.span`
-  display: inline-block;
-  background: rgba(239, 68, 68, 0.1);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  margin: 4px;
-  font-weight: 600;
+export const BackButton = styled.button`
+  margin-top: 40px;
+  background: transparent;
+  color: #38bdf8;
+  border: 1px solid #38bdf8;
+  border-radius: 6px;
+  padding: 14px 40px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(56, 189, 248, 0.1);
+    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+    transform: translateY(-2px);
+  }
 `;

@@ -1,12 +1,18 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion"; // 💡 framer-motion 추가!
+import { motion } from "framer-motion";
 import {
   Container,
   HeroSection,
   HeroTitle,
   HeroSubtitle,
   StartButton,
+  // ✨ 새로 추가된 컴포넌트들 Import
+  CapabilitySection,
+  CapabilityTitle,
+  CapabilitySubtitle,
+  CapabilityGrid,
+  CapabilityBadge,
   DashboardWrapper,
   SectionTitle,
   StatGrid,
@@ -20,7 +26,6 @@ import {
 function MainPage() {
   const navigate = useNavigate();
 
-  // ✨ 애니메이션 설정 (아래에서 위로 부드럽게 스르륵)
   const fadeUpVariant = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -30,7 +35,6 @@ function MainPage() {
     },
   };
 
-  // ✨ 시간차 애니메이션 (자식 요소들이 0.2초 간격으로 등장)
   const staggerContainer = {
     hidden: { opacity: 0 },
     visible: {
@@ -41,13 +45,9 @@ function MainPage() {
 
   return (
     <Container>
-      {/* 1. 히어로 섹션 (화면 진입 시 즉시 실행) */}
+      {/* 1. 히어로 섹션 */}
       <HeroSection>
-        <motion.div
-          variants={fadeUpVariant}
-          initial="hidden"
-          animate="visible" // 히어로는 스크롤 대기 없이 바로 보이게
-        >
+        <motion.div variants={fadeUpVariant} initial="hidden" animate="visible">
           <HeroTitle>
             AI 보안 관제 플랫폼 <br />
             <span>Virus EXIT Security Intelligence</span>
@@ -65,18 +65,62 @@ function MainPage() {
         </motion.div>
       </HeroSection>
 
+      {/* ✨ 1.5. 탐지 지원 카테고리 (멘토 피드백 반영: 검사 유도) */}
+      <motion.div
+        variants={fadeUpVariant}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.8 }}
+      >
+        <CapabilitySection>
+          <CapabilityTitle>VX AI 탐지 악성코드</CapabilityTitle>
+          <CapabilitySubtitle>
+            실시간 행위 분석과 3단계 교차 검증을 통해,
+            <br />
+            시스템을 위협하는 치명적인 악성코드들을 정확하게 식별하고
+            차단합니다.
+          </CapabilitySubtitle>
+          <CapabilityGrid>
+            <CapabilityBadge>
+              <span>💀</span> Ransomware (랜섬웨어)
+            </CapabilityBadge>
+            <CapabilityBadge>
+              <span>🐴</span> Trojan (트로이목마)
+            </CapabilityBadge>
+            <CapabilityBadge>
+              <span>🐛</span> Worm (웜 바이러스)
+            </CapabilityBadge>
+            <CapabilityBadge>
+              <span>👁️</span> Spyware (스파이웨어)
+            </CapabilityBadge>
+            <CapabilityBadge>
+              <span>🚪</span> Backdoor (백도어)
+            </CapabilityBadge>
+            <CapabilityBadge>
+              <span>📢</span> Adware (애드웨어)
+            </CapabilityBadge>
+            <CapabilityBadge>
+              <span>📦</span> Dropper (드로퍼)
+            </CapabilityBadge>
+            <CapabilityBadge>
+              <span>⌨️</span> Keylogger (키로거)
+            </CapabilityBadge>
+          </CapabilityGrid>
+        </CapabilitySection>
+      </motion.div>
+
       {/* 2. 대시보드 영역 */}
       <DashboardWrapper>
-        {/* 라이브 관제 통계 (스크롤 시 등장) */}
+        {/* 라이브 관제 통계 */}
         <motion.div
           variants={staggerContainer}
           initial="hidden"
-          whileInView="visible" // 💡 스크롤해서 화면에 보일 때 실행!
-          viewport={{ once: true, amount: 0.3 }} // 💡 30% 정도 보였을 때 딱 한 번만 실행
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
         >
           <motion.div variants={fadeUpVariant}>
             <SectionTitle>
-              <span>📊</span> VX Live Intelligence
+              <span>📊</span> VEXIT Live Intelligence
             </SectionTitle>
           </motion.div>
 
@@ -108,7 +152,7 @@ function MainPage() {
           </StatGrid>
         </motion.div>
 
-        {/* 유행하는 악성코드 TOP 5 (스크롤 시 등장) */}
+        {/* 유행하는 악성코드 TOP 5 */}
         <motion.div
           variants={staggerContainer}
           initial="hidden"
@@ -117,7 +161,7 @@ function MainPage() {
         >
           <motion.div variants={fadeUpVariant}>
             <SectionTitle>
-              <span>🦠</span> VX Top 5
+              <span>🦠</span> 글로벌 주요 탐지 위협 리스트 (Top 5)
             </SectionTitle>
           </motion.div>
 

@@ -51,7 +51,7 @@ export const HeroTitle = styled.h1`
     background: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+    text-shadow: 0 0 20px rgba(56, 191, 248, 0.19);
   }
 `;
 
@@ -107,21 +107,21 @@ export const SectionTitle = styled.h2`
   gap: 12px;
 
   span {
-    font-size: 1.8rem;
+    font-size: 2rem;
   }
 `;
 
 export const StatGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 40px;
+  gap: 20px;
 `;
 
 export const StatCard = styled.div`
   background: #111827;
   border: 1px solid #1e293b;
   border-radius: 16px;
-  padding: 30px 24px;
+  padding: 25px 20px;
   text-align: center;
   transition: all 0.3s ease;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -133,7 +133,7 @@ export const StatCard = styled.div`
   }
 
   h3 {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 800;
     margin: 0 0 12px 0;
     color: #f8fafc;
@@ -142,7 +142,7 @@ export const StatCard = styled.div`
 
   p {
     color: #94a3b8;
-    font-size: 0.95rem;
+    font-size: 0.7rem;
     font-weight: 600;
     margin: 0;
   }
@@ -188,6 +188,7 @@ export const ThreatListHeader = styled.div`
   width: 250px;
 
   h4 {
+    font-size: 1.2rem;
     margin: 0;
     color: #f8fafc;
     font-weight: 800;
@@ -208,7 +209,7 @@ export const ThreatListHeader = styled.div`
 export const ThreatListDesc = styled.p`
   margin: 0;
   color: #94a3b8;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   line-height: 1.7;
   border-left: 1px solid #1e293b;
   padding-left: 40px;
@@ -219,5 +220,69 @@ export const ThreatListDesc = styled.p`
     padding-left: 0;
     padding-top: 16px;
     border-top: 1px solid #1e293b;
+  }
+`;
+
+/* 💡 탐지 지원 카테고리 */
+export const CapabilitySection = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* 히어로 섹션 버튼 바로 아래에 자연스럽게 이어지도록 여백 설정 */
+  margin-top: -60px;
+  margin-bottom: 350px;
+`;
+
+export const CapabilityTitle = styled.h3`
+  font-size: 2.5rem;
+  color: #38bdf8;
+  margin-bottom: 40px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+`;
+
+export const CapabilitySubtitle = styled.p`
+  font-size: 1rem;
+  color: #94a3b8;
+  margin-bottom: 100px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.6;
+  max-width: 600px;
+`;
+
+export const CapabilityGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  max-width: 900px;
+`;
+
+export const CapabilityBadge = styled.div`
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid #1e293b;
+  padding: 15px 35px;
+  border-radius: 30px;
+  color: #cbd5e1;
+  font-size: 1.03rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  cursor: default;
+
+  span {
+    font-size: 1.2rem;
+  }
+
+  &:hover {
+    background: rgba(56, 189, 248, 0.1);
+    border-color: rgba(56, 189, 248, 0.5);
+    color: #38bdf8;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    transform: translateY(-3px);
   }
 `;
