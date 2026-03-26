@@ -7,7 +7,6 @@ import {
   HeroTitle,
   HeroSubtitle,
   StartButton,
-  // ✨ 새로 추가된 컴포넌트들 Import
   CapabilitySection,
   CapabilityTitle,
   CapabilitySubtitle,
@@ -21,6 +20,9 @@ import {
   ThreatListItem,
   ThreatListHeader,
   ThreatListDesc,
+  CtaSection,
+  CtaTitle,
+  CtaDescription,
 } from "./MainPage.styles";
 
 function MainPage() {
@@ -45,13 +47,13 @@ function MainPage() {
 
   return (
     <Container>
-      {/* 1. 히어로 섹션 */}
       <HeroSection>
         <motion.div variants={fadeUpVariant} initial="hidden" animate="visible">
           <HeroTitle>
             AI 보안 관제 플랫폼 <br />
             <span>Virus EXIT Security Intelligence</span>
           </HeroTitle>
+
           <HeroSubtitle>
             단일 백신의 탐지 한계를 극복한 3단계 AI 앙상블 교차 검증 알고리즘.
             <br />
@@ -60,12 +62,11 @@ function MainPage() {
           </HeroSubtitle>
 
           <StartButton onClick={() => navigate("/scan")}>
-            VX 스캔 시작
+            파일 / URL 검사하기
           </StartButton>
         </motion.div>
       </HeroSection>
 
-      {/* ✨ 1.5. 탐지 지원 카테고리 (멘토 피드백 반영: 검사 유도) */}
       <motion.div
         variants={fadeUpVariant}
         initial="hidden"
@@ -80,6 +81,7 @@ function MainPage() {
             시스템을 위협하는 치명적인 악성코드들을 정확하게 식별하고
             차단합니다.
           </CapabilitySubtitle>
+
           <CapabilityGrid>
             <CapabilityBadge>
               <span>💀</span> Ransomware (랜섬웨어)
@@ -109,9 +111,7 @@ function MainPage() {
         </CapabilitySection>
       </motion.div>
 
-      {/* 2. 대시보드 영역 */}
       <DashboardWrapper>
-        {/* 라이브 관제 통계 */}
         <motion.div
           variants={staggerContainer}
           initial="hidden"
@@ -131,18 +131,21 @@ function MainPage() {
                 <p>누적 검사 완료</p>
               </StatCard>
             </motion.div>
+
             <motion.div variants={fadeUpVariant}>
               <StatCard>
                 <h3 style={{ color: "#EF4444" }}>1,230</h3>
                 <p>위협 차단 (VEXIT)</p>
               </StatCard>
             </motion.div>
+
             <motion.div variants={fadeUpVariant}>
               <StatCard>
                 <h3 style={{ color: "#10B981" }}>7,222</h3>
                 <p>안전 확인 (Clean)</p>
               </StatCard>
             </motion.div>
+
             <motion.div variants={fadeUpVariant}>
               <StatCard>
                 <h3 style={{ color: "#38BDF8" }}>0.8s</h3>
@@ -152,7 +155,6 @@ function MainPage() {
           </StatGrid>
         </motion.div>
 
-        {/* 유행하는 악성코드 TOP 5 */}
         <motion.div
           variants={staggerContainer}
           initial="hidden"
@@ -233,6 +235,26 @@ function MainPage() {
           </ThreatList>
         </motion.div>
       </DashboardWrapper>
+
+      <motion.div
+        variants={fadeUpVariant}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
+        <CtaSection>
+          <CtaTitle>의심 파일이나 URL이 있으신가요?</CtaTitle>
+          <CtaDescription>
+            지금 바로 업로드하고 AI 기반 악성코드 분석을 시작하세요.
+            <br />
+            3단계 교차 검증으로 더 정확한 결과를 제공합니다.
+          </CtaDescription>
+
+          <StartButton onClick={() => navigate("/scan")}>
+            무료로 검사 시작
+          </StartButton>
+        </CtaSection>
+      </motion.div>
     </Container>
   );
 }
