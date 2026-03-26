@@ -15,7 +15,7 @@ export const Container = styled.div`
 
 export const ResultCard = styled.div`
   width: 100%;
-  max-width: 980px;
+  max-width: 1100px;
   margin: 0 auto;
   background: rgba(17, 24, 39, 0.94);
   border: 1px solid #1e293b;
@@ -40,11 +40,48 @@ export const Title = styled.h1`
 `;
 
 export const Subtitle = styled.p`
-  margin: 0 0 32px;
+  margin: 0 0 24px;
   text-align: center;
   color: #94a3b8;
   font-size: 1rem;
   line-height: 1.7;
+`;
+
+export const HistoryNotice = styled.div`
+  margin-bottom: 24px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  color: #94a3b8;
+  text-align: center;
+  line-height: 1.6;
+  font-size: 0.95rem;
+`;
+
+export const TabContainer = styled.div`
+  display: flex;
+  gap: 12px;
+  margin: 34px 0 24px;
+  flex-wrap: wrap;
+`;
+
+export const TabButton = styled.button`
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: 1px solid ${(props) => (props.$active ? "#38BDF8" : "#334155")};
+  background: ${(props) =>
+    props.$active ? "rgba(56, 189, 248, 0.12)" : "#0F172A"};
+  color: ${(props) => (props.$active ? "#F8FAFC" : "#94A3B8")};
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  &:hover {
+    border-color: #38bdf8;
+    color: #f8fafc;
+  }
 `;
 
 export const SummaryGrid = styled.div`
@@ -77,7 +114,7 @@ export const SummaryValue = styled.div`
   color: #f8fafc;
   font-size: 1.02rem;
   font-weight: 800;
-  word-break: break-all;
+  word-break: break-word;
   line-height: 1.5;
 `;
 
@@ -102,7 +139,7 @@ export const VerdictBadge = styled.span`
 `;
 
 export const ActionGuideBox = styled.div`
-  margin-bottom: 36px;
+  margin-bottom: 18px;
   padding: 20px 22px;
   border-radius: 16px;
   border: 1px solid
@@ -129,8 +166,58 @@ export const ActionGuideText = styled.p`
 export const SectionTitle = styled.h2`
   margin: 0 0 20px;
   color: #f8fafc;
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   font-weight: 800;
+`;
+
+export const BriefSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+`;
+
+export const BriefCard = styled.div`
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 22px;
+`;
+
+export const BriefCardTitle = styled.h3`
+  margin: 0 0 12px;
+  color: #f8fafc;
+  font-size: 1.05rem;
+  font-weight: 800;
+`;
+
+export const BriefCardText = styled.p`
+  margin: 0;
+  color: #cbd5e1;
+  line-height: 1.8;
+  font-size: 0.98rem;
+`;
+
+export const ExternalResultBox = styled.div`
+  background: rgba(17, 24, 39, 0.82);
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 22px;
+`;
+
+export const ExternalResultTitle = styled.h3`
+  margin: 0 0 12px;
+  color: #f8fafc;
+  font-size: 1.05rem;
+  font-weight: 800;
+`;
+
+export const ExternalResultText = styled.p`
+  margin: 0;
+  color: #cbd5e1;
+  line-height: 1.8;
+  font-size: 0.98rem;
+  white-space: pre-wrap;
+  word-break: break-word;
 `;
 
 export const AiResultList = styled.div`
@@ -213,6 +300,17 @@ export const ReasonItem = styled.li`
   }
 `;
 
+export const LockOverlayBox = styled.div`
+  padding: 20px;
+  border-radius: 14px;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px dashed #334155;
+  color: #94a3b8;
+  text-align: center;
+  line-height: 1.7;
+  font-size: 0.96rem;
+`;
+
 export const EmptyBox = styled.div`
   padding: 18px;
   border-radius: 14px;
@@ -278,9 +376,18 @@ export const UpgradeButton = styled.button`
   }
 `;
 
-export const BackButton = styled.button`
-  width: 100%;
+export const BottomButtonGroup = styled.div`
+  display: flex;
+  gap: 12px;
   margin-top: 28px;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+  }
+`;
+
+export const BackButton = styled.button`
+  flex: 1;
   padding: 15px;
   border: none;
   border-radius: 12px;
@@ -299,12 +406,21 @@ export const BackButton = styled.button`
   }
 `;
 
-export const HistoryNotice = styled.div`
-  margin-bottom: 20px;
-  padding: 12px;
-  border-radius: 10px;
-  background: rgba(56, 189, 248, 0.08);
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  text-align: center;
-  color: #94a3b8;
+export const SecondaryButton = styled.button`
+  flex: 1;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-size: 0.98rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  &:hover {
+    border-color: #38bdf8;
+    color: #f8fafc;
+    background: rgba(56, 189, 248, 0.06);
+  }
 `;
