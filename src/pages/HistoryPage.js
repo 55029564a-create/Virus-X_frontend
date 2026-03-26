@@ -9,6 +9,11 @@ import {
   HistoryTable,
   StatusBadge,
   EmptyMessage,
+  ClickableRow,
+  HashText,
+  FileNameText,
+  ScoreText,
+  ViewButton,
 } from "./History.styles";
 
 function HistoryPage() {
@@ -22,7 +27,6 @@ function HistoryPage() {
     const loginUser = localStorage.getItem("loginUser");
     const userId = localStorage.getItem("userId");
 
-    // 비로그인 사용자는 접근 차단
     if (!token) {
       Swal.fire({
         icon: "warning",
@@ -37,14 +41,13 @@ function HistoryPage() {
       return;
     }
 
-    // 화면 제목에 표시할 사용자명만 세팅
     try {
       if (loginUser) {
         const parsedUser = JSON.parse(loginUser);
 
-        if (parsedUser && parsedUser.email) {
+        if (parsedUser?.email) {
           setCurrentUser(parsedUser.email);
-        } else if (parsedUser && parsedUser.userId) {
+        } else if (parsedUser?.userId) {
           setCurrentUser(parsedUser.userId);
         } else if (userId) {
           setCurrentUser(userId);
@@ -66,15 +69,12 @@ function HistoryPage() {
 
     const fetchHistory = async () => {
       try {
-        // userId를 params로 보내지 않음
         const response = await api.get("/api/history");
-
         setDbStatus("connected");
         setHistoryList(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error("검사 기록 조회 에러:", error);
 
-        // 인증 실패면 로그인 페이지 이동
         if (
           error.response &&
           (error.response.status === 401 || error.response.status === 403)
@@ -132,6 +132,53 @@ function HistoryPage() {
     }
   };
 
+  const formatFileSize = (bytes) => {
+    if (bytes == null || Number.isNaN(Number(bytes))) return "-";
+
+    const size = Number(bytes);
+
+    if (size < 1024) return `${size} B`;
+    if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
+    if (size < 1024 * 1024 * 1024) {
+      return `${(size / (1024 * 1024)).toFixed(2)} MB`;
+    }
+    return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+  };
+
+  const handleViewResult = (item) => {
+    const isMalicious =
+      String(item.verdict || "").toUpperCase() === "MALICIOUS";
+
+    const mappedResultData = {
+      is_malware: isMalicious,
+      risk_score: item.riskScore ?? 0,
+      target_name: item.fileName || "Unknown File",
+      input_type: "file",
+      threat_type: item.threatType || "Unknown",
+      from_history: true,
+      ai_results: [
+        {
+          modelName: "저장된 검사 기록",
+          riskScore: item.riskScore ?? 0,
+          verdict: isMalicious ? "Malicious" : "Clean",
+          threatType: item.threatType || "Unknown",
+          reasons: [
+            `검사 일시: ${formatDateTime(item.createdAt)}`,
+            `파일명: ${item.fileName || "-"}`,
+            `SHA256: ${item.sha256 || "-"}`,
+            `파일 크기: ${formatFileSize(item.fileSize)}`,
+            `최종 판정: ${isMalicious ? "악성" : "안전"}`,
+            "이 화면은 저장된 검사 이력을 기반으로 다시 구성된 결과입니다.",
+          ],
+        },
+      ],
+    };
+
+    navigate("/result", {
+      state: { resultData: mappedResultData },
+    });
+  };
+
   return (
     <Container>
       <ContentCard>
@@ -164,36 +211,41 @@ function HistoryPage() {
                 <th>위험 점수</th>
                 <th>판정</th>
                 <th>위협 유형</th>
+                <th>보기</th>
               </tr>
             </thead>
             <tbody>
               {historyList.map((item, index) => {
                 const isMalicious =
-                  String(item.verdict).toUpperCase() === "MALICIOUS";
+                  String(item.verdict || "").toUpperCase() === "MALICIOUS";
 
                 return (
-                  <tr key={`${item.sha256 || "history"}-${index}`}>
+                  <ClickableRow
+                    key={`${item.sha256 || "history"}-${index}`}
+                    onClick={() => handleViewResult(item)}
+                  >
                     <td style={{ color: "#94A3B8" }}>
                       {formatDateTime(item.createdAt)}
                     </td>
 
-                    <td style={{ maxWidth: "300px", fontWeight: "500" }}>
-                      {item.fileName || "-"}
+                    <td>
+                      <FileNameText title={item.fileName || "-"}>
+                        {item.fileName || "-"}
+                      </FileNameText>
                     </td>
 
-                    <td style={{ color: "#CBD5E1", wordBreak: "break-all" }}>
-                      {item.sha256 || "-"}
+                    <td>
+                      <HashText title={item.sha256 || "-"}>
+                        {item.sha256 || "-"}
+                      </HashText>
                     </td>
 
-                    <td>{item.fileSize != null ? item.fileSize : "-"}</td>
+                    <td>{formatFileSize(item.fileSize)}</td>
 
-                    <td
-                      style={{
-                        color: item.riskScore >= 50 ? "#EF4444" : "#10B981",
-                        fontWeight: "700",
-                      }}
-                    >
-                      {item.riskScore != null ? item.riskScore : "-"}
+                    <td>
+                      <ScoreText $danger={(item.riskScore ?? 0) >= 50}>
+                        {item.riskScore != null ? item.riskScore : "-"}
+                      </ScoreText>
                     </td>
 
                     <td>
@@ -203,7 +255,18 @@ function HistoryPage() {
                     </td>
 
                     <td>{item.threatType || "-"}</td>
-                  </tr>
+
+                    <td>
+                      <ViewButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleViewResult(item);
+                        }}
+                      >
+                        결과 보기
+                      </ViewButton>
+                    </td>
+                  </ClickableRow>
                 );
               })}
             </tbody>

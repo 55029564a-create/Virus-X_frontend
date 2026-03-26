@@ -1,361 +1,310 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 60px 20px 100px 20px; /* 💡 하단 여백(100px)을 넉넉히 주어 잘림 방지 */
   min-height: 100vh;
-  background-color: #0b1120;
+  padding: 60px 20px;
+  background:
+    radial-gradient(
+      circle at top,
+      rgba(56, 189, 248, 0.08) 0%,
+      transparent 30%
+    ),
+    linear-gradient(180deg, #0b1120 0%, #0f172a 100%);
   box-sizing: border-box;
-`;
-
-export const HeaderTitle = styled.h2`
-  font-size: 2rem;
-  font-weight: 800;
-  color: #f8fafc;
-  margin-bottom: 30px;
-  letter-spacing: -0.5px;
 `;
 
 export const ResultCard = styled.div`
-  background: #111827;
-  border: 1px solid #1e293b;
-  border-radius: 12px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
   width: 100%;
-  max-width: 1000px;
-  padding: 40px;
+  max-width: 980px;
+  margin: 0 auto;
+  background: rgba(17, 24, 39, 0.94);
+  border: 1px solid #1e293b;
+  border-radius: 22px;
+  padding: 40px 32px;
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.38);
+  box-sizing: border-box;
+
+  @media (max-width: 640px) {
+    padding: 28px 18px;
+    border-radius: 18px;
+  }
+`;
+
+export const Title = styled.h1`
+  margin: 0 0 12px;
+  color: #f8fafc;
+  font-size: clamp(2rem, 4vw, 2.7rem);
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: -0.8px;
+`;
+
+export const Subtitle = styled.p`
+  margin: 0 0 32px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 1rem;
+  line-height: 1.7;
+`;
+
+export const SummaryGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+`;
+
+export const SummaryCard = styled.div`
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 18px;
   box-sizing: border-box;
 `;
 
-export const TopSection = styled.div`
-  display: flex;
-  gap: 50px;
-  align-items: center;
-  padding-bottom: 40px;
-  border-bottom: 1px solid #1e293b;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    text-align: center;
-  }
-`;
-
-export const ScoreGauge = styled.div`
-  position: relative;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: conic-gradient(
-    ${(props) => (props.$isMalicious ? "#EF4444" : "#10B981")}
-      ${(props) => props.$score}%,
-    #1e293b ${(props) => props.$score}%
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 30px
-    ${(props) =>
-      props.$isMalicious
-        ? "rgba(239, 68, 68, 0.3)"
-        : "rgba(16, 185, 129, 0.3)"};
-  flex-shrink: 0;
-
-  &::before {
-    content: "";
-    position: absolute;
-    width: 170px;
-    height: 170px;
-    background-color: #111827;
-    border-radius: 50%;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
-  }
-`;
-
-export const ScoreText = styled.div`
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-export const ScoreNumber = styled.span`
-  font-size: 3.5rem;
-  font-weight: 800;
-  color: ${(props) => (props.$isMalicious ? "#EF4444" : "#10B981")};
-  line-height: 1;
-  text-shadow: 0 0 15px
-    ${(props) =>
-      props.$isMalicious
-        ? "rgba(239, 68, 68, 0.5)"
-        : "rgba(16, 185, 129, 0.5)"};
-`;
-
-export const ScoreLabel = styled.span`
-  font-size: 0.9rem;
+export const SummaryLabel = styled.div`
+  margin-bottom: 8px;
   color: #94a3b8;
-  margin-top: 8px;
+  font-size: 0.92rem;
   font-weight: 600;
-  letter-spacing: 1px;
 `;
 
-export const SummarySection = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
-
-export const TargetName = styled.h2`
-  font-size: 1.6rem;
+export const SummaryValue = styled.div`
   color: #f8fafc;
-  margin: 20px 0 10px 0;
+  font-size: 1.02rem;
+  font-weight: 800;
   word-break: break-all;
-  letter-spacing: -0.5px;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
+  line-height: 1.5;
 `;
 
-export const ThreatTypeBadge = styled.span`
-  font-size: 0.9rem;
+export const VerdictBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.92rem;
   font-weight: 800;
-  padding: 4px 12px;
-  border-radius: 6px;
-  background-color: ${(props) =>
-    props.$isMalicious
-      ? "rgba(239, 68, 68, 0.15)"
-      : "rgba(16, 185, 129, 0.15)"};
-  color: ${(props) => (props.$isMalicious ? "#F87171" : "#34D399")};
   border: 1px solid
     ${(props) =>
-      props.$isMalicious
-        ? "rgba(239, 68, 68, 0.4)"
-        : "rgba(16, 185, 129, 0.4)"};
+      props.$type === "danger"
+        ? "rgba(239, 68, 68, 0.3)"
+        : "rgba(16, 185, 129, 0.3)"};
+  background: ${(props) =>
+    props.$type === "danger"
+      ? "rgba(239, 68, 68, 0.12)"
+      : "rgba(16, 185, 129, 0.12)"};
+  color: ${(props) => (props.$type === "danger" ? "#f87171" : "#34d399")};
 `;
 
 export const ActionGuideBox = styled.div`
-  margin-top: 15px;
-  background: #0f172a;
-  padding: 20px 25px;
-  border-radius: 8px;
-  border-left: 4px solid
-    ${(props) => (props.$isMalicious ? "#EF4444" : "#10B981")};
-  border-top: 1px solid #1e293b;
-  border-right: 1px solid #1e293b;
-  border-bottom: 1px solid #1e293b;
-`;
-
-export const ActionHeader = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #f8fafc;
-  margin-bottom: 12px;
-`;
-
-export const ActionList = styled.ul`
-  margin: 0;
-  padding-left: 20px;
-  color: #cbd5e1;
-  font-size: 1rem;
-
-  li {
-    margin-bottom: 8px;
-    line-height: 1.5;
-    strong {
-      color: #38bdf8;
-    }
-  }
-`;
-
-export const BottomSection = styled.div`
-  padding-top: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-`;
-
-export const SectionTitle = styled.h3`
-  color: #f8fafc;
-  font-size: 1.3rem;
-  margin: 0 0 10px 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
-
-export const AICard = styled.div`
-  background: #0f172a;
-  border: 1px solid #1e293b;
-  border-radius: 12px;
-  overflow: hidden; /* 💡 내용물이 카드 밖으로 나가지 않도록 꽉 잡음 */
-  display: flex;
-  flex-direction: column;
-`;
-
-export const AIHeader = styled.div`
-  background: rgba(255, 255, 255, 0.02);
-  padding: 16px 24px;
-  border-bottom: 1px solid #1e293b;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  h4 {
-    margin: 0;
-    color: #f8fafc;
-    font-size: 1.1rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  span {
-    font-size: 0.9rem;
-    color: #94a3b8;
-  }
-`;
-
-/* 💡 [박스 잘림 수정] Body 전체를 감싸는 래퍼 추가 */
-export const AIBodyWrapper = styled.div`
-  position: relative; /* 자물쇠의 절대 기준점이 됨 */
-  width: 100%;
-`;
-
-export const AIBody = styled.div`
-  padding: 24px;
-  color: #cbd5e1;
-  font-size: 0.95rem;
-  line-height: 1.6;
-
-  /* 💡 잠겼을 때는 내용물을 흐리게 처리 */
-  filter: ${(props) => (props.$isLocked ? "blur(8px)" : "none")};
-  transition: filter 0.3s ease;
-  user-select: ${(props) => (props.$isLocked ? "none" : "auto")};
-`;
-
-/* 💡 DTO 데이터를 예쁘게 보여줄 태그 영역 */
-export const AIDetailRow = styled.div`
-  display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-`;
-
-export const AITag = styled.div`
-  background: ${(props) =>
-    props.$isMalicious ? "rgba(239, 68, 68, 0.1)" : "rgba(16, 185, 129, 0.1)"};
-  color: ${(props) => (props.$isMalicious ? "#F87171" : "#34D399")};
+  margin-bottom: 36px;
+  padding: 20px 22px;
+  border-radius: 16px;
   border: 1px solid
     ${(props) =>
-      props.$isMalicious
-        ? "rgba(239, 68, 68, 0.3)"
-        : "rgba(16, 185, 129, 0.3)"};
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+      props.$danger ? "rgba(239, 68, 68, 0.25)" : "rgba(56, 189, 248, 0.2)"};
+  background: ${(props) =>
+    props.$danger ? "rgba(239, 68, 68, 0.08)" : "rgba(56, 189, 248, 0.07)"};
 `;
 
-export const AINormalTag = styled.div`
-  background: rgba(56, 189, 248, 0.1);
-  color: #38bdf8;
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 700;
+export const ActionGuideTitle = styled.h3`
+  margin: 0 0 10px;
+  color: #f8fafc;
+  font-size: 1.15rem;
+  font-weight: 800;
+`;
+
+export const ActionGuideText = styled.p`
+  margin: 0;
+  color: #cbd5e1;
+  line-height: 1.75;
+  font-size: 0.97rem;
+`;
+
+export const SectionTitle = styled.h2`
+  margin: 0 0 20px;
+  color: #f8fafc;
+  font-size: 1.5rem;
+  font-weight: 800;
+`;
+
+export const AiResultList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+`;
+
+export const AiResultCard = styled.div`
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 20px;
+  box-sizing: border-box;
+`;
+
+export const AiResultHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 14px;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+`;
+
+export const ModelName = styled.h3`
+  margin: 0 0 8px;
+  color: #f8fafc;
+  font-size: 1.08rem;
+  font-weight: 800;
+`;
+
+export const ScoreBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 68px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  background: ${(props) =>
+    props.$danger ? "rgba(239, 68, 68, 0.12)" : "rgba(16, 185, 129, 0.12)"};
+  color: ${(props) => (props.$danger ? "#f87171" : "#34d399")};
+  border: 1px solid
+    ${(props) =>
+      props.$danger ? "rgba(239, 68, 68, 0.24)" : "rgba(16, 185, 129, 0.24)"};
+`;
+
+export const VerdictText = styled.div`
+  margin-bottom: 12px;
+  color: ${(props) => (props.$danger ? "#f87171" : "#34d399")};
+  font-size: 0.96rem;
+  font-weight: 800;
+`;
+
+export const ThreatType = styled.div`
+  color: #94a3b8;
+  font-size: 0.92rem;
+  font-weight: 600;
 `;
 
 export const ReasonList = styled.ul`
   margin: 0;
   padding-left: 20px;
-  color: #94a3b8;
+  color: #e2e8f0;
+`;
 
-  li {
-    margin-bottom: 6px;
-  }
-  li:last-child {
+export const ReasonItem = styled.li`
+  margin-bottom: 8px;
+  line-height: 1.7;
+  color: #cbd5e1;
+
+  &:last-child {
     margin-bottom: 0;
   }
 `;
 
-export const LockedOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(11, 17, 32, 0.3);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  z-index: 10;
+export const EmptyBox = styled.div`
+  padding: 18px;
+  border-radius: 14px;
+  background: rgba(30, 41, 59, 0.55);
+  border: 1px dashed #334155;
+  color: #94a3b8;
   text-align: center;
-  padding: 20px;
+  line-height: 1.7;
 `;
 
-export const LockIcon = styled.div`
+export const UpgradeSection = styled.div`
+  margin-top: 38px;
+  padding: 40px 20px;
+  text-align: center;
+  background: linear-gradient(
+    135deg,
+    rgba(56, 189, 248, 0.08),
+    rgba(29, 78, 216, 0.08)
+  );
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+`;
+
+export const UpgradeTitle = styled.h3`
+  margin: 0 0 14px;
   font-size: 1.5rem;
-  filter: drop-shadow(0 0 10px rgba(56, 191, 248, 0.23));
-`;
-
-export const LockText = styled.p`
-  margin: 0;
+  font-weight: 800;
   color: #f8fafc;
-  font-size: 1rem;
-  font-weight: 600;
-
-  span {
-    color: #38bdf8;
-  }
 `;
 
-export const UnlockButton = styled.button`
-  background: linear-gradient(135deg, #38bdf8 0%, #1d4ed8 100%);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 30px;
-  font-size: 0.9rem;
-  font-weight: 700;
+export const UpgradeDesc = styled.p`
+  margin: 0 0 28px;
+  color: #94a3b8;
+  line-height: 1.7;
+`;
+
+export const UpgradeButtonGroup = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+`;
+
+export const UpgradeButton = styled.button`
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 0.95rem;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(56, 191, 248, 0.16);
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
+  background: ${(props) =>
+    props.$secondary
+      ? "transparent"
+      : "linear-gradient(135deg, #38BDF8, #1D4ED8)"};
+  color: ${(props) => (props.$secondary ? "#38BDF8" : "#ffffff")};
+  border: ${(props) => (props.$secondary ? "1px solid #38BDF8" : "none")};
+  box-shadow: ${(props) =>
+    props.$secondary ? "none" : "0 10px 24px rgba(56, 189, 248, 0.22)"};
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+    transform: translateY(-1px);
+    opacity: 0.95;
   }
 `;
 
 export const BackButton = styled.button`
-  margin-top: 40px;
-  background: transparent;
-  color: #38bdf8;
-  border: 1px solid #38bdf8;
-  border-radius: 6px;
-  padding: 14px 40px;
-  font-size: 1.1rem;
-  font-weight: 700;
+  width: 100%;
+  margin-top: 28px;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #38bdf8 0%, #1d4ed8 100%);
+  color: #ffffff;
+  font-size: 0.98rem;
+  font-weight: 800;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
+  box-shadow: 0 10px 24px rgba(56, 189, 248, 0.22);
 
   &:hover {
-    background: rgba(56, 189, 248, 0.1);
-    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+    background: linear-gradient(135deg, #0ea5e9 0%, #1e40af 100%);
     transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(56, 189, 248, 0.3);
   }
+`;
+
+export const HistoryNotice = styled.div`
+  margin-bottom: 20px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  text-align: center;
+  color: #94a3b8;
 `;
