@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import api from "../api/axios";
 import {
   Container,
   HeroSection,
@@ -44,7 +46,25 @@ function MainPage() {
       transition: { staggerChildren: 0.2 },
     },
   };
+const [stats, setStats] = useState({
+  totalScans: 0,
+  threatCount: 0,
+  cleanCount: 0,
+  averageScanTimeSec: 0,
+});
 
+useEffect(() => {
+  const fetchDashboardSummary = async () => {
+    try {
+      const response = await api.get("/api/dashboard/summary");
+      setStats(response.data);
+    } catch (error) {
+      console.error("대시보드 통계 조회 실패:", error);
+    }
+  };
+
+  fetchDashboardSummary();
+}, []);
   return (
     <Container>
       <HeroSection>
@@ -118,41 +138,47 @@ function MainPage() {
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
         >
-          <motion.div variants={fadeUpVariant}>
+          <motion.div variants={fadeUpVariant}> 
             <SectionTitle>
               <span>📊</span> VEXIT Live Intelligence
             </SectionTitle>
           </motion.div>
 
           <StatGrid>
-            <motion.div variants={fadeUpVariant}>
-              <StatCard>
-                <h3>8,452</h3>
-                <p>누적 검사 완료</p>
-              </StatCard>
-            </motion.div>
+  <motion.div variants={fadeUpVariant}>
+    <StatCard>
+      <h3>{Number(stats.totalScans || 0).toLocaleString()}</h3>
+      <p>누적 검사 완료</p>
+    </StatCard>
+  </motion.div>
 
-            <motion.div variants={fadeUpVariant}>
-              <StatCard>
-                <h3 style={{ color: "#EF4444" }}>1,230</h3>
-                <p>위협 차단 (VEXIT)</p>
-              </StatCard>
-            </motion.div>
+  <motion.div variants={fadeUpVariant}>
+    <StatCard>
+      <h3 style={{ color: "#EF4444" }}>
+        {Number(stats.threatCount || 0).toLocaleString()}
+      </h3>
+      <p>위협 차단 (VEXIT)</p>
+    </StatCard>
+  </motion.div>
 
-            <motion.div variants={fadeUpVariant}>
-              <StatCard>
-                <h3 style={{ color: "#10B981" }}>7,222</h3>
-                <p>안전 확인 (Clean)</p>
-              </StatCard>
-            </motion.div>
+  <motion.div variants={fadeUpVariant}>
+    <StatCard>
+      <h3 style={{ color: "#10B981" }}>
+        {Number(stats.cleanCount || 0).toLocaleString()}
+      </h3>
+      <p>안전 확인 (Clean)</p>
+    </StatCard>
+  </motion.div>
 
-            <motion.div variants={fadeUpVariant}>
-              <StatCard>
-                <h3 style={{ color: "#38BDF8" }}>0.8s</h3>
-                <p>평균 진단 소요 시간</p>
-              </StatCard>
-            </motion.div>
-          </StatGrid>
+  <motion.div variants={fadeUpVariant}>
+    <StatCard>
+      <h3 style={{ color: "#38BDF8" }}>
+        {Number(stats.averageScanTimeSec || 0).toFixed(1)}s
+      </h3>
+      <p>평균 진단 소요 시간</p>
+    </StatCard>
+  </motion.div>
+</StatGrid>
         </motion.div>
 
         <motion.div
