@@ -44,6 +44,7 @@ function App() {
               <Route path="/" element={<MainPage />} />
               <Route path="/scan" element={<UploadPage />} />
               <Route path="/result" element={<ResultPage />} />
+              <Route path="/result/:id" element={<ResultPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/history" element={<HistoryPage />} />

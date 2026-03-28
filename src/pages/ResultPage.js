@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useMemo, useState, useEffect } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import api from "../api/axios";
 import {
   Container,
   ResultCard,
@@ -46,35 +47,76 @@ import {
 } from "./ResultPage.styles";
 
 function ResultPage() {
+  // const location = useLocation();
+  // const navigate = useNavigate();
+
+  // const resultData = location.state?.resultData;
+  // const isLoggedIn = !!localStorage.getItem("accessToken");
+  // const [activeTab, setActiveTab] = useState("brief");
+
+  // const {
+  //   is_malware = false,
+  //   risk_score = 0,
+  //   target_name = "-",
+  //   input_type = "file",
+  //   threat_type = "Unknown",
+  //   ai_results = [],
+  //   from_history = false,
+
+  //   // 선택적으로 들어올 수 있는 값들
+  //   action,
+  //   llm_explanation,
+  //   virustotal,
+  //   external_results,
+  // } = resultData || {};
+
+  const { id } = useParams(); // 1. URL에서 ID 읽기 추가
   const location = useLocation();
   const navigate = useNavigate();
 
-  const resultData = location.state?.resultData;
+  // 2. 상태 관리 (서버 데이터를 담을 그릇)
+  const [resultData, setResultData] = useState(
+    location.state?.resultData || null,
+  );
   const isLoggedIn = !!localStorage.getItem("accessToken");
   const [activeTab, setActiveTab] = useState("brief");
 
-  const {
-    is_malware = false,
-    risk_score = 0,
-    target_name = "-",
-    input_type = "file",
-    threat_type = "Unknown",
-    ai_results = [],
-    from_history = false,
+  // 3. 서버 통신 로직 (없으면 가져오기)
+  useEffect(() => {
+    // resultData가 없고 id가 주소창에 있을 때만 실행
+    if (!resultData && id) {
+      api
+        .get(`/api/history/${id}`)
+        .then((res) => {
+          setResultData(res.data); // 서버 데이터를 변수에 저장
+        })
+        .catch((err) => {
+          console.error("데이터 로드 실패:", err);
+        });
+    }
+  }, [id, resultData]);
 
-    // 선택적으로 들어올 수 있는 값들
+  // 4. 변수 이름 매칭 (백엔드 CamelCase -> 프론트 snake_case)
+  // 이 부분이 정확해야 화면에 숫자가 꽂힙니다.
+  const {
+    isMalware: is_malware = false,
+    riskScore: risk_score = 0,
+    fileName: target_name = "-",
+    inputType: input_type = "file",
+    threatType: threat_type = "Unknown",
+    aiAnalyses: ai_results = [],
+    fromHistory: from_history = false,
     action,
-    llm_explanation,
-    virustotal,
-    external_results,
+    overallSummary: llm_explanation,
+    externalResults: external_results,
   } = resultData || {};
 
   const externalAnalysis = useMemo(() => {
     // 백엔드 응답이 아직 확정되지 않았으니 다양한 형태를 흡수
-    if (virustotal) return virustotal;
+    // if (virustotal) return virustotal;
     if (external_results) return external_results;
     return null;
-  }, [virustotal, external_results]);
+  }, [external_results]);
 
   if (!resultData) {
     return (
