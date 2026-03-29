@@ -100,6 +100,7 @@ function ResultPage() {
   // 이 부분이 정확해야 화면에 숫자가 꽂힙니다.
   const {
     isMalware: is_malware = false,
+    verdict,
     riskScore: risk_score = 0,
     fileName: target_name = "-",
     inputType: input_type = "file",
@@ -136,7 +137,9 @@ function ResultPage() {
     );
   }
 
-  const finalVerdictColor = is_malware ? "danger" : "safe";
+  const finalIsMalware = is_malware || verdict === "MALICIOUS";
+
+  const finalVerdictColor = finalIsMalware ? "danger" : "safe";
 
   const getActionGuide = () => {
     if (action && String(action).trim()) {
@@ -146,7 +149,7 @@ function ResultPage() {
       };
     }
 
-    if (is_malware) {
+    if (finalIsMalware) {
       return {
         title: "즉시 조치가 필요합니다",
         text: "해당 파일 또는 URL 실행을 중단하고, 시스템 격리 및 추가 백신 검사 또는 보안 담당자 확인을 권장합니다.",
@@ -253,13 +256,13 @@ function ResultPage() {
             <SummaryLabel>종합 판정</SummaryLabel>
             <SummaryValue>
               <VerdictBadge $type={finalVerdictColor}>
-                {is_malware ? "🚨 악성 의심" : "✅ 안전"}
+                {finalIsMalware ? "🚨 악성 의심" : "✅ 안전"}
               </VerdictBadge>
             </SummaryValue>
           </SummaryCard>
 
           <SummaryCard>
-            <SummaryLabel>위험도 점수</SummaryLabel>
+            <SummaryLabel>위험도 점수(1 = 100%)</SummaryLabel>
             <SummaryValue>{risk_score ?? 0}점</SummaryValue>
           </SummaryCard>
 
@@ -269,7 +272,7 @@ function ResultPage() {
           </SummaryCard>
         </SummaryGrid>
 
-        <ActionGuideBox $danger={is_malware}>
+        <ActionGuideBox $danger={finalIsMalware}>
           <ActionGuideTitle>{actionGuide.title}</ActionGuideTitle>
           <ActionGuideText>{actionGuide.text}</ActionGuideText>
         </ActionGuideBox>
@@ -298,7 +301,7 @@ function ResultPage() {
               <BriefCardText>
                 {llm_explanation && String(llm_explanation).trim()
                   ? llm_explanation
-                  : is_malware
+                  : finalIsMalware
                     ? "이 파일 또는 URL은 악성 가능성이 높으며, 실행 또는 접근을 즉시 중단하는 것이 좋습니다."
                     : "현재 분석 기준으로는 위험 징후가 낮지만, 출처가 불분명하다면 추가 확인을 권장합니다."}
               </BriefCardText>
