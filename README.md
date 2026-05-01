@@ -1,26 +1,34 @@
 # Virus-X
 
-클라우드 악성코드 예측 감지 시스템입니다.  
-파일 및 URL 검사 결과를 AI 분석 모델과 연동하여 사용자에게 직관적인 보안 검사 결과를 제공하는 웹 기반 보안 서비스입니다.
+AI 기반 클라우드 악성코드 예측 감지 시스템입니다.  
+사용자가 업로드한 파일 또는 입력한 URL을 분석하여 악성 여부와 위협 유형을 판단하고, 결과를 직관적인 UI로 제공하는 웹 기반 보안 서비스입니다.
 
-## My Role
+## 담당 역할
 
 프론트엔드 / UI 설계 / API 연동
 
-- 메인 대시보드와 스캐너 페이지 구조 분리
-- 토큰 기반 회원/비회원 권한 분기 UI 설계
-- 로그인 상태에 따른 헤더, 푸터, 접근 가능 화면 구성
-- 파일 검사 및 URL 검사 화면 UI 구현
-- 백엔드 API 연동을 통한 검사 결과 화면 표시
-- 검사 결과 데이터 시각화 및 사용자 인터랙션 구성
-- 사용자가 검사 결과를 직관적으로 이해할 수 있도록 UI/UX 개선
+- 프로젝트 초기 구조 파악 및 보안 서비스 흐름 조사
+- 악성코드 탐지 서비스 구조, AI 분석 흐름, 사용자 검사 플로우 자료 조사
+- Virus-X 프론트엔드 전반 구현
+- 메인 화면, 로그인, 회원가입, 파일 검사, URL 검사, 검사 결과 페이지 UI 구현
+- 토큰 기반 로그인 상태에 따른 회원/비회원 UI 분기 처리
+- 파일 검사 및 URL 검사 요청 UI 구성
+- FastAPI AI 서버와 프론트엔드 연동
+- Spring Boot 백엔드 API와 프론트엔드 기능 연결
+- AI 분석 결과를 검사 결과 페이지에 시각화
+- 사용자 인터랙션 및 UI/UX 개선
+- AI2 모델 개발 및 설계
+- 악성코드 유형 분류를 위한 데이터 분석 및 특징값 구성
+- XGBoost 기반 악성코드 유형 분류 모델 구현
+- Ransomware, Trojan, Spyware 등 악성코드 유형 분류 결과 활용
 
 ## Tech Stack
 
 - Frontend: React, JavaScript, Node.js
 - Backend: Spring Boot, Java, JWT
+- AI Server: FastAPI, Python
 - Database: MongoDB
-- AI/ML: Python, scikit-learn, LightGBM
+- AI/ML: XGBoost, scikit-learn, LightGBM
 - Tools: Git, GitHub, Figma, Notion, Discord
 
 ## 주요 기능
